@@ -2,11 +2,11 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type Note struct {
@@ -20,9 +20,9 @@ type Tag struct {
 	Name string
 }
 
-type NoteJSON struct {
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
+type NoteForm struct {
+	Content string `form:"content"`
+	Tags    string `form:"tags"`
 }
 
 func main() {
@@ -37,21 +37,30 @@ func main() {
 	// Setup server
 	router := gin.Default()
 	router.SetTrustedProxies([]string{"localhost"})
+	router.LoadHTMLGlob("templates/*")
+	router.Static("/assets", "./assets")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Kitab",
+		})
+	})
 
 	router.POST("/note", func(c *gin.Context) {
-		var json NoteJSON
-		if err := c.ShouldBindJSON(&json); err != nil {
+		var form NoteForm
+		if err := c.ShouldBind(&form); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		var tags []Tag
-		for _, s := range json.Tags {
-			tag := Tag{Name: s}
+		splitTags := strings.Split(form.Tags, " ")
+		for _, s := range splitTags {
+			var tag Tag
+			db.FirstOrCreate(&tag, Tag{Name: s})
 			tags = append(tags, tag)
-			db.Clauses(clause.OnConflict{DoNothing: true}).Create(&tag)
 		}
-		note := Note{Content: json.Content, Tags: tags}
+		note := Note{Content: form.Content, Tags: tags}
 		result := db.Create(&note)
 
 		if result.RowsAffected > 0 {
