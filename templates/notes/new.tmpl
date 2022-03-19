@@ -1,0 +1,16 @@
+{{ define "notes/new.tmpl" }}
+{{ template "shared/header.tmpl" .}}
+{{ template "shared/navbar.tmpl" .}}
+
+<form id="editor-form" action="/notes/new" method="POST">
+  <input name="title" type="text" placeholder="Title" />
+  <textarea name="content" placeholder="Things that need to be noted"></textarea>
+  <input name="tags" type="text" placeholder="Tags, separated by spaces i.e. 'cat pet cute'" />
+  <button id="editor-submit-button">
+    Save
+  </button>
+</form>
+
+{{ template "shared/footer.tmpl" .}}
+
+{{ end }}

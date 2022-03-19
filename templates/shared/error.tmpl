@@ -1,0 +1,12 @@
+{{ define "shared/error.tmpl" }}
+{{ template "shared/header.tmpl" .}}
+{{ template "shared/navbar.tmpl" .}}
+
+<p>
+    {{ .msg }}&nbsp;
+    {{ .error }}
+</p>
+
+{{ template "shared/footer.tmpl" .}}
+
+{{ end }}

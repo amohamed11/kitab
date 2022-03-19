@@ -1,0 +1,20 @@
+{{ define "home/index.tmpl" }}
+{{ template "shared/header.tmpl" .}}
+{{ template "shared/navbar.tmpl" .}}
+
+  <div class="notes-list">
+    <ol>
+      {{ range $_, $note := .notes }}
+        {{ if $note }}
+          <li>
+            <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
+          </li>
+        {{ end }}
+      {{ end }}
+    </ol>
+  </div>
+
+
+{{ template "shared/footer.tmpl" .}}
+
+{{ end }}

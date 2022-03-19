@@ -1,0 +1,19 @@
+{{ define "notes/view.tmpl" }}
+{{ template "shared/header.tmpl" .}}
+{{ template "shared/navbar.tmpl" .}}
+
+<div id="view-note">
+  <strong>Title: </strong>{{ .note.Title }}<br/>
+  <strong>Tags: </strong>
+  {{ range .note.Tags }}
+    #{{ .Name }}
+  {{ end }}
+  <br/>
+  <div id="view-note-content">
+    {{ .contentHTML }}
+  </div>
+</div>
+
+{{ template "shared/footer.tmpl" .}}
+
+{{ end }}
