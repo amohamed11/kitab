@@ -1,5 +1,6 @@
-html, body {
-    margin: 1rem 2rem;
+body {
+    width: auto;
+    margin: 0 2rem;
 }
 
 textarea {
@@ -8,28 +9,32 @@ textarea {
 }
 
 h1, h2, h3, h4 {
-    margin-bottom: 8px !important;
+    margin-bottom: 8px;
 }
 
 h1 {
-    font-size: 28px !important;
+    font-size: 28px;
 }
 
 h2 {
-    font-size: 24px !important;
+    font-size: 24px;
 }
 
 h3 {
-    font-size: 20px !important;
+    font-size: 20px;
 }
 
 h4 {
-    font-size: 18px !important;
+    font-size: 18px;
 }
 
 #editor-submit-button {
     width: 8rem;
     margin: 0 auto;
+}
+
+#editor-tags-input {
+    max-height: 2.4rem;
 }
 
 #view-note-content {

@@ -56,7 +56,7 @@ func main() {
 
 	router.GET("/", func(c *gin.Context) {
 		var notes []Note
-		result := db.Find(&notes)
+		result := db.Preload("Tags").Select("id", "title").Find(&notes)
 
 		if result.Error == nil {
 			c.HTML(http.StatusOK, "home/index.tmpl", gin.H{

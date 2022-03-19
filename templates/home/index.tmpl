@@ -3,15 +3,24 @@
 {{ template "shared/navbar.tmpl" .}}
 
   <div class="notes-list">
-    <ol>
-      {{ range $_, $note := .notes }}
-        {{ if $note }}
-          <li>
-            <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
-          </li>
+    {{ if gt .count 0 }}
+      <ol>
+        {{ range $_, $note := .notes }}
+          {{ if $note }}
+            <li>
+              <p>
+                <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
+                {{ range $note.Tags }}
+                  #{{ .Name }}
+                {{ end }}
+              </p>
+            </li>
+          {{ end }}
         {{ end }}
-      {{ end }}
-    </ol>
+      </ol>
+    {{ else }}
+      <p>Nothing of note yet :)</p>
+    {{ end }}
   </div>
 
 
