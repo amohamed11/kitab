@@ -29,7 +29,7 @@ h4 {
 }
 
 input {
-    max-height: 2.5rem;
+    max-height: 2.2rem;
 }
 
 #editor-submit-button {
@@ -48,4 +48,8 @@ input {
 
 #index-search-form {
     margin-bottom: 0;
+}
+
+#index-notes-list {
+  padding-left: 8px;
 }

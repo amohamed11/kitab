@@ -4,11 +4,6 @@
 
 <div id="view-note">
   <strong>Title: </strong>{{ .note.Title }}<br/>
-  <strong>Tags: </strong>
-  {{ range .note.Tags }}
-    #{{ .Name }}
-  {{ end }}
-  <br/>
   <div id="view-note-content">
     {{ .contentHTML }}
   </div>

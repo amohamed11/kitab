@@ -6,7 +6,7 @@
   <input id="index-search-input" name="query" type="text" placeholder="Search content" />
 </form>
 
-<div class="notes-list">
+<div id="index-notes-list">
   {{ if gt .count 0 }}
     <ol>
       {{ range $_, $note := .notes }}
@@ -14,9 +14,6 @@
           <li>
             <p>
               <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
-              {{ range $note.Tags }}
-                #{{ .Name }}
-              {{ end }}
             </p>
           </li>
         {{ end }}

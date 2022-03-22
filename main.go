@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"html/template"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yuin/goldmark"
@@ -22,7 +21,6 @@ type Note struct {
 	gorm.Model
 	Title   string
 	Content string
-	Tags    []Tag `gorm:"many2many:note_tags;"`
 }
 
 type NoteSearch struct {
@@ -31,15 +29,9 @@ type NoteSearch struct {
 	Content   string
 }
 
-type Tag struct {
-	gorm.Model
-	Name string
-}
-
 type NoteForm struct {
 	Title   string `form:"title"`
 	Content string `form:"content"`
-	Tags    string `form:"tags"`
 }
 
 func main() {
@@ -49,7 +41,7 @@ func main() {
 		panic("failed to connect database")
 	}
 	// Migrate the schema & setup tables
-	db.AutoMigrate(&Note{}, &Tag{})
+	db.AutoMigrate(&Note{})
 	db.Exec("CREATE VIRTUAL TABLE IF NOT EXISTS notesearch using fts5(noteid, title, content)")
 
 	// Setup goldmark
@@ -83,7 +75,7 @@ func main() {
 
 func (s *Server) Index(c *gin.Context) {
 	var notes []Note
-	result := s.DB.Preload("Tags").Select("id", "title").Find(&notes)
+	result := s.DB.Select("id", "title").Find(&notes)
 
 	if result.Error == nil {
 		c.HTML(http.StatusOK, "home/index.tmpl", gin.H{
@@ -102,7 +94,7 @@ func (s *Server) Index(c *gin.Context) {
 func (s *Server) GetNoteById(c *gin.Context) {
 	var note Note
 	id := c.Param("id")
-	result := s.DB.Preload("Tags").Find(&note, id)
+	result := s.DB.Find(&note, id)
 
 	if result.Error == nil {
 		var buf bytes.Buffer
@@ -128,14 +120,7 @@ func (s *Server) NewNote(c *gin.Context) {
 		return
 	}
 
-	var tags []Tag
-	splitTags := strings.Split(form.Tags, " ")
-	for _, tagString := range splitTags {
-		var tag Tag
-		s.DB.FirstOrCreate(&tag, Tag{Name: tagString})
-		tags = append(tags, tag)
-	}
-	note := Note{Title: form.Title, Content: form.Content, Tags: tags}
+	note := Note{Title: form.Title, Content: form.Content}
 	result := s.DB.Create(&note)
 
 	if result.RowsAffected > 0 && result.Error == nil {
