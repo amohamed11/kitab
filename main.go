@@ -23,12 +23,6 @@ type Note struct {
 	Content string
 }
 
-type NoteSearch struct {
-	ID        int
-	Noterowid int
-	Content   string
-}
-
 type NoteForm struct {
 	Title   string `form:"title"`
 	Content string `form:"content"`
@@ -40,9 +34,26 @@ func main() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	// Migrate the schema & setup tables
+	// Setup DB schema
 	db.AutoMigrate(&Note{})
-	db.Exec("CREATE VIRTUAL TABLE IF NOT EXISTS notesearch using fts5(noteid, title, content)")
+	db.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS notesearch using fts5(noteid, title, content, tokenize="porter");`)
+	db.Exec(`
+	  CREATE TRIGGER  add_notesearch
+	     AFTER INSERT ON notes
+	  BEGIN
+	     INSERT INTO notesearch(noteid, title, content) VALUES(NEW.id, NEW.title, NEW.content);
+	  END;
+	`)
+	db.Exec(`
+	  CREATE TRIGGER  update_notesearch
+	     AFTER UPDATE ON notes
+	     WHEN OLD.title <> NEW.title OR OLD.content <> NEW.content
+	  BEGIN
+	     UPDATE notesearch
+	     SET title=NEW.title, content=NEW.content
+	     WHERE noteid = OLD.id;
+	  END;
+	`)
 
 	// Setup goldmark
 	md := goldmark.New(
@@ -124,11 +135,6 @@ func (s *Server) NewNote(c *gin.Context) {
 	result := s.DB.Create(&note)
 
 	if result.RowsAffected > 0 && result.Error == nil {
-		// Save to virtual table for easier searching of content
-		s.DB.Exec(
-			"INSERT INTO notesearch VALUES(?, ?, ?)",
-			note.ID, note.Title, note.Content,
-		)
 		// Render markdown
 		var buf bytes.Buffer
 		if err := s.MD.Convert([]byte(note.Content), &buf); err != nil {
@@ -167,7 +173,7 @@ func (s *Server) SearchNote(c *gin.Context) {
 	).Scan(&notes)
 
 	if searchResults.Error == nil {
-		c.HTML(http.StatusOK, "home/index.tmpl", gin.H{
+		c.HTML(http.StatusOK, "notes/list.tmpl", gin.H{
 			"count": len(notes),
 			"notes": notes,
 		})

@@ -2,28 +2,16 @@
 {{ template "shared/header.tmpl" .}}
 {{ template "shared/navbar.tmpl" .}}
 
-<form id="index-search-form" action="/notes/search" method="POST">
+<form
+  id="index-search-form"
+  hx-post="/notes/search"
+  hx-target="#notes-list"
+  hx-swap="outerHTML"
+>
   <input id="index-search-input" name="query" type="text" placeholder="Search content" />
 </form>
 
-<div id="index-notes-list">
-  {{ if gt .count 0 }}
-    <ol>
-      {{ range $_, $note := .notes }}
-        {{ if $note }}
-          <li>
-            <p>
-              <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
-            </p>
-          </li>
-        {{ end }}
-      {{ end }}
-    </ol>
-  {{ else }}
-    <p>Nothing of note yet :)</p>
-  {{ end }}
-</div>
-
+{{ template "notes/list.tmpl" .}}
 
 {{ template "shared/footer.tmpl" .}}
 

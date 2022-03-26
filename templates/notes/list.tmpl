@@ -1,0 +1,19 @@
+{{ define "notes/list.tmpl" }}
+
+<div id="notes-list">
+  {{ if gt .count 0 }}
+    <ol>
+      {{ range $_, $note := .notes }}
+        {{ if $note }}
+          <li>
+            <a href="/notes/{{ $note.ID }}">{{ $note.Title }}</a>
+          </li>
+        {{ end }}
+      {{ end }}
+    </ol>
+  {{ else }}
+    <p>Nothing of note yet :)</p>
+  {{ end }}
+</div>
+
+{{ end }}
