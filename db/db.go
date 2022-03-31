@@ -13,9 +13,9 @@ type Note struct {
 	Content string
 }
 
-func Init() {
+func Init(db_url string) {
 	var err error
-	db, err = gorm.Open(sqlite.Open("kitab.db"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(db_url), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
