@@ -7,12 +7,18 @@
   <textarea
     id="editor-content-input"
     name="content"
-    placeholder="Things that need to be noted"
   ></textarea>
   <button id="editor-submit-button">
     Save
   </button>
 </form>
+
+<script>
+  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("editor-content-input"), {
+      mode: "markdown",
+      theme: "ayu-mirage"
+    });
+</script>
 
 {{ template "shared/footer.tmpl" .}}
 

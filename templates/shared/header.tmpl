@@ -1,7 +1,7 @@
 {{ define "shared/header.tmpl" }}
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="utf-8">
@@ -15,10 +15,15 @@
   <meta property="og:type" content="website">
   <meta property="og:description" content="Minimal note-taking app.">
 
+  <link rel="stylesheet" href="/assets/js/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="/assets/js/codemirror/ayu-mirage.css">
   <link rel="stylesheet" href="/assets/css/pico.min.css">
-  <link rel="stylesheet" href="/assets/css/index.css">
 
+  <script src="/assets/js/codemirror/lib/codemirror.js"></script>
+  <script src="/assets/js/codemirror/mode/markdown/markdown.js"></script>
   <script src="/assets/js/htmx.min.js"></script>
+
+  <link rel="stylesheet" href="/assets/css/index.css">
   <script src="/assets/js/index.js"></script>
 </head>
 
