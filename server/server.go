@@ -22,6 +22,7 @@ func Init(port string) {
 	router.GET("/notes/new", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "notes/new.tmpl", gin.H{})
 	})
+	router.POST("/notes/:id", notesController.Edit)
 	router.POST("/notes/new", notesController.New)
 	router.POST("/notes/search", notesController.Search)
 

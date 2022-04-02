@@ -58,7 +58,7 @@ func (n NoteController) GetById(c *gin.Context) {
 		if err := MD.Convert([]byte(note.Content), &buf); err != nil {
 			panic(err)
 		}
-		c.HTML(http.StatusOK, "notes/view.tmpl", gin.H{
+		c.HTML(http.StatusOK, "notes/edit.tmpl", gin.H{
 			"note":        note,
 			"contentHTML": template.HTML(buf.String()),
 		})
@@ -81,14 +81,32 @@ func (n NoteController) New(c *gin.Context) {
 	result := db.GetDB().Create(&note)
 
 	if result.RowsAffected > 0 && result.Error == nil {
-		// Render markdown
-		var buf bytes.Buffer
-		if err := MD.Convert([]byte(note.Content), &buf); err != nil {
-			panic(err)
-		}
-		c.HTML(http.StatusCreated, "notes/view.tmpl", gin.H{
-			"note":        note,
-			"contentHTML": template.HTML(buf.String()),
+		c.HTML(http.StatusCreated, "notes/edit.tmpl", gin.H{
+			"note": note,
+		})
+		return
+	}
+
+	c.HTML(http.StatusInternalServerError, "shared/error.tmpl", gin.H{
+		"msg":   "Something went wrong!",
+		"error": result.Error,
+	})
+}
+
+func (n NoteController) Edit(c *gin.Context) {
+	var form NoteForm
+	id := c.Param("id")
+	if err := c.ShouldBind(&form); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedNote := db.Note{Title: form.Title, Content: form.Content}
+	result := db.GetDB().Model(&db.Note{}).Where("id = ?", id).Updates(updatedNote)
+
+	if result.RowsAffected > 0 && result.Error == nil {
+		c.HTML(http.StatusOK, "notes/edit.tmpl", gin.H{
+			"note": updatedNote,
 		})
 		return
 	}

@@ -1,9 +1,9 @@
-{{ define "notes/new.tmpl" }}
+{{ define "notes/edit.tmpl" }}
 {{ template "shared/header.tmpl" .}}
 {{ template "shared/navbar.tmpl" .}}
 
-<div id="new-note">
-  <form id="editor-form" action="/notes/new" method="POST">
+<div id="edit-note">
+  <form id="editor-form" action="/notes/{{ .note.ID }}" method="POST">
     {{ template "notes/_editor.tmpl" .}}
   </form>
 </div>
