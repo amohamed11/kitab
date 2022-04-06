@@ -3,7 +3,10 @@
 {{ template "shared/navbar.tmpl" .}}
 
 <div id="edit-note">
-  <form id="editor-form" action="/notes/{{ .note.ID }}" method="POST">
+  <form
+    id="editor-form"
+    hx-put="/notes/{{ .note.ID }}"
+  >
     {{ template "notes/_editor.tmpl" .}}
   </form>
 </div>

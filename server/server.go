@@ -22,9 +22,9 @@ func Init(port string) {
 	router.GET("/notes/new", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "notes/new.tmpl", gin.H{})
 	})
-	router.POST("/notes/:id", notesController.Edit)
 	router.POST("/notes/new", notesController.New)
 	router.POST("/notes/search", notesController.Search)
+	router.PUT("/notes/:id", notesController.Edit)
 
 	// Listen and serve on 0.0.0.0:8080
 	router.Run(":8080")

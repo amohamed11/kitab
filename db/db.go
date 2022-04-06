@@ -3,6 +3,7 @@ package db
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
@@ -15,7 +16,9 @@ type Note struct {
 
 func Init(db_url string) {
 	var err error
-	db, err = gorm.Open(sqlite.Open(db_url), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(db_url), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic("failed to connect database")
 	}

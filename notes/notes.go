@@ -101,11 +101,11 @@ func (n NoteController) Edit(c *gin.Context) {
 		return
 	}
 
-	updatedNote := db.Note{Title: form.Title, Content: form.Content}
-	result := db.GetDB().Model(&db.Note{}).Where("id = ?", id).Updates(updatedNote)
+	var updatedNote db.Note
+	result := db.GetDB().Model(&updatedNote).Where("id = ?", id).Updates(db.Note{Title: form.Title, Content: form.Content})
 
 	if result.RowsAffected > 0 && result.Error == nil {
-		c.HTML(http.StatusOK, "notes/edit.tmpl", gin.H{
+		c.HTML(http.StatusOK, "notes/_editor.tmpl", gin.H{
 			"note": updatedNote,
 		})
 		return
