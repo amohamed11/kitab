@@ -105,14 +105,15 @@ func (n NoteController) Edit(c *gin.Context) {
 	result := db.GetDB().Model(&updatedNote).Where("id = ?", id).Updates(db.Note{Title: form.Title, Content: form.Content})
 
 	if result.RowsAffected > 0 && result.Error == nil {
+		c.Writer.Header().Set("HX-Trigger", `{"showToast":"success"}`)
 		c.HTML(http.StatusOK, "notes/_editor.tmpl", gin.H{
 			"note": updatedNote,
 		})
 		return
 	}
 
-	c.HTML(http.StatusInternalServerError, "shared/error.tmpl", gin.H{
-		"msg":   "Something went wrong!",
+	c.Writer.Header().Set("HX-Trigger", `{"showToast":"failure"}`)
+	c.HTML(http.StatusInternalServerError, "notes/_editor.tmpl", gin.H{
 		"error": result.Error,
 	})
 }

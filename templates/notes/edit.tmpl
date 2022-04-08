@@ -6,6 +6,7 @@
   <form
     id="editor-form"
     hx-put="/notes/{{ .note.ID }}"
+    hx-swap="none"
   >
     {{ template "notes/_editor.tmpl" .}}
   </form>

@@ -7,11 +7,17 @@
 </button>
 
 <script type="text/javascript">
-  var myTextArea = document.getElementById("editor-content-input");
-  var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
-      mode: "markdown",
-      theme: "ayu-mirage",
-      lineWrapping: true
+var editorForm = document.getElementById("editor-form");
+    var textArea = document.getElementById("editor-content-input");
+    var codeMirror = CodeMirror.fromTextArea(textArea, {
+        mode: "markdown",
+        theme: "ayu-mirage",
+        lineWrapping: true,
+        lineNumbers: true
+    });
+
+    codeMirror.on("changes", cm => {
+        textArea.value = cm.getValue();
     });
 </script>
 
