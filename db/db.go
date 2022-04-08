@@ -8,10 +8,17 @@ import (
 
 var db *gorm.DB
 
+type Folder struct {
+	gorm.Model
+	Name  string
+	Notes []Note
+}
+
 type Note struct {
 	gorm.Model
-	Title   string
-	Content string
+	Title    string
+	Content  string
+	FolderID uint
 }
 
 func Init(db_url string) {
